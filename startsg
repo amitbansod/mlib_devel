@@ -150,7 +150,6 @@ else
 fi
 
 export PATH="${MATLAB_PATH}/bin:${PATH}"
-
 # Set umask to allow group writes
 umask 002
 
