@@ -75,6 +75,7 @@ class Toolflow(object):
         self.periph_file = self.compile_dir + '/jasper.per'
         self.git_info_file = self.compile_dir + '/git_info.tab'
         self.frontend_target = frontend_target
+        self.modelname = frontend_target.split('/')[-1][:-4]  # strip off extension
         self.frontend_target_base = os.path.basename(frontend_target)
 
 
@@ -297,11 +298,28 @@ class Toolflow(object):
         Constructs an associated VerilogModule instance ready to be
         modified.
         """
-        # generate multiboot, golden or tooflow image based on yaml file
-        self.hdl_filename = '%s/infrastructure/%s_parameters.vhd' % (os.getenv('HDL_ROOT'), self.plat.name)
-        # check to see if parameter file exists. Some platforms may not use this.
-        if os.path.isfile(self.hdl_filename):
-            self._gen_hdl_version(filename_hdl=self.hdl_filename)
+        try:
+            # generate multiboot, golden or tooflow image based on yaml file
+            self.hdl_filename = '%s/infrastructure/%s_parameters.vhd' % (os.getenv('HDL_ROOT'), self.plat.name)
+            # check to see if parameter file exists. Some platforms may not use this.
+            if os.path.isfile(self.hdl_filename):
+                self._gen_hdl_version(filename_hdl=self.hdl_filename)
+        except KeyError:
+            s = ""
+        # check to see if entity file exists. Some platforms may not use this. This function overwrites incorrectly
+        # generated sysgen hdl files
+        #if self.platform.conf['bit_reversal']==True:
+        try:
+            # return the sysgen entity declarations file
+            self.hdl_sysgen_filename = '%s/sysgen/hdl_netlist/%s.srcs/sources_1/imports/sysgen/%s_entity_declarations.vhd' \
+                                       % (self.compile_dir, self.modelname, self.modelname)
+            if os.path.isfile(self.hdl_sysgen_filename):
+                self._gen_hdl_simulink(hdl_sysgen_filename=self.hdl_sysgen_filename)
+        # just ignore if key is not present as only some platforms will have the key.
+        except KeyError:
+            s = ""
+        #import IPython
+        #IPython.embed()
         self.topfile = self.compile_dir+'/top.v'
         # delete top.v file if it exists, otherwise synthesis will fail
         if os.path.exists(self.topfile):
@@ -317,7 +335,6 @@ class Toolflow(object):
             self.top = verilog.VerilogModule(name='top', topfile=self.topfile)
         else:
             self.top = verilog.VerilogModule(name='top')
-
 
     def gen_periph_objs(self):
         """
@@ -716,6 +733,72 @@ class Toolflow(object):
         #import IPython
         #IPython.embed()
 
+    def _gen_hdl_simulink(self, hdl_sysgen_filename):
+        """
+        This function replaces incorrectly generated simulink sysgen code with the proper code. In this case, the
+        dual port ram latency is incorrectly generated when using Vivado 2018.2, 2018.2.2. The code is only replaced if
+        the dual port ram is utilised and the 2018.2, 2018.2.2 version is detected.
+
+        :param hdl_sysgen_filename: This is the path and hdl file that
+            contains the original sysgen code. This file is overwritten with new latency info before being imported to
+            the compile directory
+        :type filename_bin: str
+        """
+        stringToMatch_ver = '2018.2'
+        stringToMatchS = '_xldpram'
+        stringToMatchA = 'latency_test: if (latency > 6) generate'
+        stringToMatchB = 'latency => latency - 6'
+        stringToMatchC = 'latency1: if (latency <= 6) generate'
+
+        lines = []
+        self.logger.debug('Opening Original hdl file %s' % hdl_sysgen_filename)
+
+        # checks to see if Vivado version is 2018.2 before doing this change
+        ver_exists = 'False'
+        with open(hdl_sysgen_filename, 'r') as fh1:
+            for line in fh1:
+                if stringToMatch_ver in line:
+                    ver_exists = True
+        fh1.close()
+
+        # checks to see if dual port ram is instantiated before doing this change
+        dpram_exists = 'False'
+        with open(hdl_sysgen_filename, 'r') as fh1:
+            for line in fh1:
+                if stringToMatchS in line:
+                    dpram_exists = True
+        fh1.close()
+
+        # If dual port ram exists and version is 2018.2 then, read sysgen code from original file and write appended
+        # corrected code to a new list that will be written into a new file
+        if dpram_exists == True and ver_exists == True:
+            with open(hdl_sysgen_filename, 'r') as fh1:
+                for line in fh1:
+                    if stringToMatchA in line:
+                        linesub = line[:line.find('>') + 2] + '3' + line[line.find('>') + 3:]
+                        lines.append(linesub)
+                    elif stringToMatchB in line:
+                        linesub = line[:line.find('-') + 2] + '3' + line[line.find('-') + 3:]
+                        lines.append(linesub)
+                    elif stringToMatchC in line:
+                        linesub = line[:line.find('=') + 2] + '3' + line[line.find('=') + 3:]
+                        lines.append(linesub)
+                    else:
+                        lines.append(line)
+            fh1.close()
+
+            # write updated sysgen code to the same file that will be imported to the correct folder
+            with open(hdl_sysgen_filename, 'w') as fh2:
+                fh2.writelines(lines)
+            fh2.close()
+            self.logger.debug('File written. Vivado version is 2018.2: %s. Dual Port RAM exists: %s'
+                             % (ver_exists, dpram_exists))
+        else:
+            self.logger.debug('File not written. Vivado version is 2018.2: %s. Dual Port RAM exists: %s'
+                             % (ver_exists, dpram_exists))
+        #import IPython
+        #IPython.embed()
+
 class ToolflowFrontend(object):
     """
 
@@ -1098,8 +1181,6 @@ class SimulinkFrontend(ToolflowFrontend):
         term_cmd = matlab_start_cmd + ' -nodesktop -nosplash -r "%s"' % ml_cmd
         self.logger.info('Running terminal command: %s' % term_cmd)
         os.system(term_cmd)
-        # return the name of the top module of the user ip
-
 
 class VivadoBackend(ToolflowBackend):
     """
@@ -1369,15 +1450,22 @@ class VivadoBackend(ToolflowBackend):
             try:
                 if plat.conf['bit_reversal'] == True:
                     self.add_tcl_cmd('write_cfgmem -force -format bin -interface bpix8 -size 128 -loadbit "up 0x0 '
-                                 '%s/%s/%s.runs/impl_1/top.bit" -file %s'
-                                 % (self.compile_dir, self.project_name, self.project_name, self.binary_loc), stage='post_bitgen')
+                                  '%s/%s/%s.runs/impl_1/top.bit" -file %s'
+                                   % (self.compile_dir, self.project_name, self.project_name, self.binary_loc), stage='post_bitgen')
             # just ignore if key is not present as only some platforms will have the key.
             except KeyError:
                 s = ""
             # Generate a hex and mcs file for SKARAB for the multiboot or golden image. This is used by
             # casperfpga and JTAG for configuring the FPGA
             try:
-                if plat.conf['boot_image'] == 'golden' or plat.conf['boot_image'] == 'multiboot':
+                if plat.conf['boot_image'] == 'multiboot':
+                    self.add_tcl_cmd('write_cfgmem -force -format hex -interface bpix16 -size 128 -loadbit "up 0x0 '
+                                 '%s/%s/%s.runs/impl_1/top.bit" -file %s'
+                                 % (self.compile_dir, self.project_name, self.project_name, self.hex_loc), stage='post_bitgen')
+                    self.add_tcl_cmd('write_cfgmem -force -format mcs -interface bpix16 -size 128 -loadbit "up 0x03000000 '
+                                 '%s/%s/%s.runs/impl_1/top.bit" -file %s'
+                                 % (self.compile_dir, self.project_name, self.project_name, self.mcs_loc), stage='post_bitgen')
+                if plat.conf['boot_image'] == 'golden':
                     self.add_tcl_cmd('write_cfgmem -force -format hex -interface bpix16 -size 128 -loadbit "up 0x0 '
                                  '%s/%s/%s.runs/impl_1/top.bit" -file %s'
                                  % (self.compile_dir, self.project_name, self.project_name, self.hex_loc), stage='post_bitgen')
@@ -1488,7 +1576,16 @@ class VivadoBackend(ToolflowBackend):
             # Generate a hex and mcs file for SKARAB for the multiboot or golden
             # images. This is used by casperfpga and JTAG for configuring the FPGA
             try:
-                if plat.conf['boot_image'] == 'golden' or plat.conf['boot_image'] == 'multiboot':
+                if plat.conf['boot_image'] == 'multiboot':
+                    tcl('write_cfgmem -force -format hex -interface bpix16 '
+                        '-size 128 -loadbit "up 0x0 %s/%s/top.bit" -file %s' % (
+                            self.compile_dir, self.project_name,
+                            self.hex_loc))
+                    tcl('write_cfgmem -force -format mcs -interface bpix16 '
+                        '-size 128 -loadbit "up 0x03000000 %s/%s/top.bit" -file %s' % (
+                            self.compile_dir, self.project_name,
+                            self.mcs_loc))
+                if plat.conf['boot_image'] == 'golden':
                     tcl('write_cfgmem -force -format hex -interface bpix16 '
                         '-size 128 -loadbit "up 0x0 %s/%s/top.bit" -file %s' % (
                             self.compile_dir, self.project_name,
