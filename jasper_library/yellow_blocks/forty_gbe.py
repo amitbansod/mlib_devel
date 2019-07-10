@@ -228,7 +228,7 @@ class forty_gbe(YellowBlock):
         #inst.add_port('AUX_SYNCO_N', 'AUX_SYNCO_N', parent_port=True, dir='out')
 
         inst.add_port('EMCCLK_FIX', 'EMCCLK_FIX', parent_port=True, dir='out')
-
+        
         inst.add_port('forty_gbe_rst',             self.fullname+'_rst',             width=1,   dir='in')
         inst.add_port('forty_gbe_tx_valid',        self.fullname+'_tx_valid',        width=4,   dir='in')
         inst.add_port('forty_gbe_tx_end_of_frame', self.fullname+'_tx_end_of_frame', width=1,   dir='in')
