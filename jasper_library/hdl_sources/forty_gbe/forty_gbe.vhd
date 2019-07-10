@@ -42,6 +42,7 @@ entity forty_gbe is
         FABRIC_GATEWAY    : std_logic_vector( 7 downto 0);
         FABRIC_ENABLE     : std_logic;
         TTL               : std_logic_vector( 7 downto 0);
+        MEZZ_PORT         : std_logic_vector( 1 downto 0);
         PROMISC_MODE      : integer;
         RX_CRC_CHK_ENABLE : integer := 0);
     port(
@@ -63,6 +64,29 @@ entity forty_gbe is
         MEZ3_PHY11_LANE_RX_N : in  std_logic_vector(3 downto 0);
         MEZ3_PHY11_LANE_TX_P : out std_logic_vector(3 downto 0);
         MEZ3_PHY11_LANE_TX_N : out std_logic_vector(3 downto 0);
+
+        MEZ3_REFCLK_1_P      : in  std_logic;
+        MEZ3_REFCLK_1_N      : in  std_logic;
+        MEZ3_PHY12_LANE_RX_P : in  std_logic_vector(3 downto 0);
+        MEZ3_PHY12_LANE_RX_N : in  std_logic_vector(3 downto 0);
+        MEZ3_PHY12_LANE_TX_P : out std_logic_vector(3 downto 0);
+        MEZ3_PHY12_LANE_TX_N : out std_logic_vector(3 downto 0);
+
+
+        MEZ3_REFCLK_2_P      : in  std_logic;
+        MEZ3_REFCLK_2_N      : in  std_logic;
+        MEZ3_PHY21_LANE_RX_P : in  std_logic_vector(3 downto 0);
+        MEZ3_PHY21_LANE_RX_N : in  std_logic_vector(3 downto 0);
+        MEZ3_PHY21_LANE_TX_P : out std_logic_vector(3 downto 0);
+        MEZ3_PHY21_LANE_TX_N : out std_logic_vector(3 downto 0);
+
+
+        MEZ3_REFCLK_3_P      : in  std_logic;
+        MEZ3_REFCLK_3_N      : in  std_logic;
+        MEZ3_PHY22_LANE_RX_P : in  std_logic_vector(3 downto 0);
+        MEZ3_PHY22_LANE_RX_N : in  std_logic_vector(3 downto 0);
+        MEZ3_PHY22_LANE_TX_P : out std_logic_vector(3 downto 0);
+        MEZ3_PHY22_LANE_TX_N : out std_logic_vector(3 downto 0);
         
 		-- MEZZANINE 0 SIDEBAND SIGNALS
         MEZZANINE_0_PRESENT_N : in std_logic;
@@ -2444,6 +2468,7 @@ begin
         FABRIC_GATEWAY    => FABRIC_GATEWAY,
         FABRIC_ENABLE     => FABRIC_ENABLE,
         TTL               => TTL,
+        MEZZ_PORT         => MEZZ_PORT,
         PROMISC_MODE      => PROMISC_MODE,
         RX_CRC_CHK_ENABLE => RX_CRC_CHK_ENABLE)
     port map(
