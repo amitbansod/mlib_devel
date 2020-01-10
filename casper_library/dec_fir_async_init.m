@@ -123,14 +123,29 @@ if coeff_sym,
     % y(n) = sum(aix(n-i)) for i=0:N. sync is thus related to x(0)
     sync_latency = add_latency + sync_latency;
 end
-% if delay is greater than 17*3 then might as well use logic as using more than 3 SRL16s and sync_delay uses approx 3 (2 comparators, one counter) 
-if sync_latency > 17*3,
-    sync_delay_block = 'casper_library_delays/sync_delay';
-    parm_name = 'DelayLen';
-else 
-    sync_delay_block = 'xbsIndex_r4/Delay';
-    parm_name = 'latency';
+% if sync_latency > 17*3,
+%     sync_delay_block = 'casper_library_delays/sync_delay';
+%     parm_name = 'DelayLen';
+% else 
+%     sync_delay_block = 'xbsIndex_r4/Delay';
+%     parm_name = 'latency';
+% end
+
+% NOTE: The above code is commented out as we need an enable for the delay
+% block. This may be added to the casper library delay block later
+% New:
+sync_delay_block = 'xbsIndex_r4/Delay';
+parm_name = 'latency';
+
+
+
+
+if async_ops
+   dvalid_en = 'on';    
+else
+   dvalid_en = 'off';
 end
+
 reuse_block(blk, 'sync_in', 'built-in/inport', ...
     'Position', [0 20 30 36], 'Port', '1');
 reuse_block(blk, 'sync_delay', sync_delay_block, ...
