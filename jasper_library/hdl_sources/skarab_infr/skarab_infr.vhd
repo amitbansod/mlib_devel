@@ -878,14 +878,14 @@ architecture arch_skarab_infr of skarab_infr is
 
     --signal gmii_rx_valid_ramp_checker : std_logic;
     --signal gmii_rx_end_of_frame_ramp_checker : std_logic;
-    signal gmii_rx_overrun_ack_ramp_checker : std_logic;
-    signal gmii_rx_ack_ramp_checker : std_logic;
+    --signal gmii_rx_overrun_ack_ramp_checker : std_logic;
+    --signal gmii_rx_ack_ramp_checker : std_logic;
     
     --AI start: Add fortygbe config interface 
     --signal xlgmii_rx_valid_ramp_checker : T_40GBE_DATA_VALID;
     --signal xlgmii_rx_end_of_frame_ramp_checker : std_logic_vector(0 to (C_NUM_40GBE_MAC - 1));
-    signal xlgmii_rx_overrun_ack_ramp_checker : std_logic_vector(0 to (C_NUM_40GBE_MAC - 1));
-    signal xlgmii_rx_ack_ramp_checker : std_logic_vector(0 to (C_NUM_40GBE_MAC - 1));
+    --signal xlgmii_rx_overrun_ack_ramp_checker : std_logic_vector(0 to (C_NUM_40GBE_MAC - 1));
+    --signal xlgmii_rx_ack_ramp_checker : std_logic_vector(0 to (C_NUM_40GBE_MAC - 1));
     --AI end: Add fortygbe config interface         
 
     signal microblaze_uart_rxd : std_logic;
@@ -919,8 +919,6 @@ architecture arch_skarab_infr of skarab_infr is
     signal host_reset_d : std_logic;
     signal host_reset_d2 : std_logic;
     signal host_reset_d3 : std_logic;     
-
-
 
     signal led_rx : std_logic;
     signal led_tx : std_logic;
@@ -1096,107 +1094,8 @@ architecture arch_skarab_infr of skarab_infr is
     signal MEZZ3_ID : std_logic_vector(2 downto 0);
     signal MEZZ3_PRESENT : std_logic;
     
-    -- Mark Debug ILA Testing    
-    --signal dbg_wb_cross_clock_out_din : std_logic_vector(72 downto 0);
-    --signal dbg_wb_cross_clock_out_wrreq : std_logic;
-    --signal dbg_wb_cross_clock_out_rdreq : std_logic;
-    --signal dbg_wb_cross_clock_out_dout : std_logic_vector(72 downto 0);
-    --signal dbg_wb_cross_clock_out_full : std_logic;
-    --signal dbg_wb_cross_clock_out_empty : std_logic;
-  --
-    --signal dbg_wb_data_in : std_logic_vector(31 downto 0);
-    --signal dbg_wb_ack_in : std_logic;
-    --signal dbg_wb_ack_in_z1 : std_logic;
-    --signal dbg_wb_ack_in_z2 : std_logic;
-    --signal dbg_wb_sync_ack_in : std_logic;
-    --signal dbg_wb_sync_data_in : std_logic_vector(31 downto 0);
-  --
-    --signal dbg_wb_dsp_wr_state : T_WB_DSP_WR_STATE;   
-    --signal dbg_WB_SLV_ACK_O_top : std_logic;
-    --signal dbg_WB_SLV_DAT_O_top : std_logic_vector(31 downto 0);
-    --signal dbg_WB_SLV_DAT_O : std_logic_vector(31 downto 0);
-    --signal dbg_WB_SLV_ACK_O : std_logic;
-    --signal dbg_WB_SLV_SEL_I_top : std_logic_vector(3 downto 0);
-    --signal dbg_WB_SLV_STB_I_top : std_logic;
-    --signal dbg_WB_SLV_WE_I_top : std_logic;    
-  --
-    --signal dbg_WB_SLV_ADR_I_top : std_logic_vector(31 downto 0);
-    --signal dbg_WB_SLV_CYC_I_top : std_logic;
-    --signal dbg_WB_SLV_DAT_I : std_logic_vector(31 downto 0);  
-    --signal dbg_WB_SLV_ADR_I : std_logic_vector(31 downto 0);  
-    --signal dbg_WB_SLV_CYC_I : std_logic;  
-    --signal dbg_WB_SLV_SEL_I : std_logic_vector(3 downto 0);  
-    --signal dbg_WB_SLV_WE_I : std_logic; 
-    --signal dbg_WB_SLV_STB_I : std_logic;
-    
-    
-                                    
-    -- Mark Debug ILA Testing
-    
-    --attribute MARK_DEBUG : string;
-    --attribute MARK_DEBUG of dbg_wb_cross_clock_out_din : signal is "TRUE";
-    --attribute MARK_DEBUG of dbg_wb_cross_clock_out_wrreq : signal is "TRUE";
-    --attribute MARK_DEBUG of dbg_wb_cross_clock_out_rdreq : signal is "TRUE";
-    --attribute MARK_DEBUG of dbg_wb_cross_clock_out_dout : signal is "TRUE";
-    --attribute MARK_DEBUG of dbg_wb_cross_clock_out_full : signal is "TRUE"; 
-    --attribute MARK_DEBUG of dbg_wb_cross_clock_out_empty : signal is "TRUE";    
-    --attribute MARK_DEBUG of dbg_wb_data_in : signal is "TRUE";    
-    --attribute MARK_DEBUG of dbg_wb_ack_in : signal is "TRUE";    
-    --attribute MARK_DEBUG of dbg_wb_ack_in_z1 : signal is "TRUE";    
-    --attribute MARK_DEBUG of dbg_wb_ack_in_z2 : signal is "TRUE";    
-    --attribute MARK_DEBUG of dbg_wb_sync_ack_in : signal is "TRUE";    
-    --attribute MARK_DEBUG of dbg_wb_sync_data_in : signal is "TRUE";    
---
-    --attribute MARK_DEBUG of dbg_wb_dsp_wr_state : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_ACK_O_top : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_DAT_O_top : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_DAT_O : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_ACK_O : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_SEL_I_top : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_STB_I_top : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_WE_I_top : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_ADR_I_top : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_CYC_I_top : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_DAT_I : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_ADR_I : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_CYC_I : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_SEL_I : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_WE_I : signal is "TRUE";   
-    --attribute MARK_DEBUG of dbg_WB_SLV_STB_I : signal is "TRUE";   
-    
     
 begin
-
-    --ILA Assignments
-    --dbg_wb_cross_clock_out_din <= wb_cross_clock_out_din;
-    --dbg_wb_cross_clock_out_wrreq <= wb_cross_clock_out_wrreq;
-    --dbg_wb_cross_clock_out_rdreq <= wb_cross_clock_out_rdreq;
-    --dbg_wb_cross_clock_out_dout <= wb_cross_clock_out_dout;
-    --dbg_wb_cross_clock_out_full <= wb_cross_clock_out_full;
-    --dbg_wb_cross_clock_out_empty <= wb_cross_clock_out_empty;
-    --dbg_wb_data_in <= wb_data_in;
-    --dbg_wb_ack_in <= wb_ack_in;
-    --dbg_wb_ack_in_z1 <= wb_ack_in_z1;
-    --dbg_wb_ack_in_z2 <= wb_ack_in_z2;
-    --dbg_wb_sync_ack_in <= wb_sync_ack_in;
-    --dbg_wb_sync_data_in <= wb_sync_data_in;
-    --dbg_wb_dsp_wr_state <= wb_dsp_wr_state;
-    --dbg_WB_SLV_ACK_O_top <= WB_SLV_ACK_O_top;
-    --dbg_WB_SLV_DAT_O_top <= WB_SLV_DAT_O_top;
-    --dbg_WB_SLV_DAT_O <= WB_SLV_DAT_O(14);
-    --dbg_WB_SLV_ACK_O <= WB_SLV_ACK_O(14);
-    --dbg_WB_SLV_SEL_I_top <= wb_cross_clock_out_dout(4 downto 1);
-    --dbg_WB_SLV_STB_I_top <= wb_cross_clock_out_dout(72);
-    --dbg_WB_SLV_WE_I_top <= wb_cross_clock_out_dout(0);
-    --dbg_WB_SLV_ADR_I_top <= wb_cross_clock_out_dout(37 downto 6);
-    --dbg_WB_SLV_CYC_I_top <= wb_cross_clock_out_dout(5);
-    --dbg_WB_SLV_DAT_I <= WB_SLV_DAT_I(14);
-    --dbg_WB_SLV_ADR_I <= WB_SLV_ADR_I(14);
-    --dbg_WB_SLV_CYC_I <= WB_SLV_CYC_I(14);
-    --dbg_WB_SLV_SEL_I <= WB_SLV_SEL_I(14);
-    --dbg_WB_SLV_WE_I <= WB_SLV_WE_I(14);
-    --dbg_WB_SLV_STB_I <= WB_SLV_STB_I(14);
-
     --Mezzanine 3 ID and Present (this should be part of the 40GbE yellow block, but is part of the BSP for now)
     --Mezzanine ID: "000" = spare, "001" = 40GbE, "010" = HMC, "011" = ADC, rest = spare
     MEZZ3_ID <= "001";
@@ -1586,7 +1485,7 @@ begin
     
     --This is part of the configuration link auto-sensing function. If any of the 40GbE links are up then configuration
     --defaults to the 40GbE interface else it defaults to the 1GbE interface 
-    --fgbe_link_status <= phy_rx_up_cpu(0) or phy_rx_up_cpu(1) or phy_rx_up_cpu(2) or phy_rx_up_cpu(3);
+    --fgbe_link_status <= phy_rx_up_cpu_0 or phy_rx_up_cpu_1 or phy_rx_up_cpu_2 or phy_rx_up_cpu_3;
     --Select whether configuration via forty_gbe interface or via 1GbE interface (0 = 1GbE, 1 = 40GbE)
     --This will override the auto-sensing select function (default is 40GbE)
     --Obviously if there is no 40GbE this will have no effect, as fbe_link_status will be '0' and hence, 1GbE will
@@ -2218,14 +2117,14 @@ begin
 
     --AI Start: Added fortygbe config interface
     -- MUX BETWEEN FLASH_SDRAM CONTROLLER AND 1GbE Data Streaming
-    gmii_rx_valid_flash_sdram_controller <= gmii_rx_valid when (select_one_gbe_data_sel  = '0') else '0';
-    gmii_rx_end_of_frame_flash_sdram_controller <= gmii_rx_end_of_frame when (select_one_gbe_data_sel  = '0') else '0';
+    --gmii_rx_valid_flash_sdram_controller <= gmii_rx_valid when (select_one_gbe_data_sel  = '0') else '0';
+    --gmii_rx_end_of_frame_flash_sdram_controller <= gmii_rx_end_of_frame when (select_one_gbe_data_sel  = '0') else '0';
 
     --gmii_rx_valid_ramp_checker <= gmii_rx_valid when (select_one_gbe_data_sel  = '1') else '0';
     --gmii_rx_end_of_frame_ramp_checker <= gmii_rx_end_of_frame when (select_one_gbe_data_sel  = '1') else '0';
 
-    gmii_rx_overrun_ack <= gmii_rx_overrun_ack_flash_sdram_controller when (select_one_gbe_data_sel  = '0') else gmii_rx_overrun_ack_ramp_checker;
-    gmii_rx_ack <= gmii_rx_ack_flash_sdram_controller when (select_one_gbe_data_sel  = '0') else gmii_rx_ack_ramp_checker;
+    --gmii_rx_overrun_ack <= gmii_rx_overrun_ack_flash_sdram_controller when (select_one_gbe_data_sel  = '0') else gmii_rx_overrun_ack_ramp_checker;
+    --gmii_rx_ack <= gmii_rx_ack_flash_sdram_controller when (select_one_gbe_data_sel  = '0') else gmii_rx_ack_ramp_checker;
 
     -- MUX BETWEEN FLASH_SDRAM CONTROLLER AND 40GbE Data Streaming on link 1 (Eth 0)
     --xlgmii_rx_valid_flash_sdram_controller(0) <= xlgmii_rx_valid when (select_forty_gbe_data_sel  = '0') else "0000";
@@ -2584,7 +2483,7 @@ begin
 -------------------------------------------------------------------------
 -- Wishbone DSP Registers
 -------------------------------------------------------------------------
-                
+       
     -- WISHBONE SLAVE 14 - DSP Registers
     WB_SLV_CLK_I_top <= bsp_clk;--sys_clk;
     WB_SLV_RST_I_top <= bsp_rst;--sys_rst;
@@ -2740,7 +2639,7 @@ begin
     port map(
         clk                   => sys_clk,
         rst                   => sys_rst,
-        forty_gbe_link_status => phy_rx_up_cpu_0, -- Only using 40GbE_0
+        forty_gbe_link_status => phy_rx_up_cpu_0 or phy_rx_up_cpu_1 or phy_rx_up_cpu_2 or phy_rx_up_cpu_3, -- Only using 40GbE_0
         dhcp_resolved         => brd_user_write_regs(C_WR_FRONT_PANEL_STAT_LED_ADDR)(0),
         firmware_version      => C_VERSION(31 downto 28),
         ublaze_toggle_value   => brd_user_read_regs(C_RD_UBLAZE_ALIVE_ADDR)(0),
