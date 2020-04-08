@@ -80,12 +80,20 @@ function delay_bram_init(blk, varargin)
     'bin_pt', '0', ... 
     'use_rpm', use_rpm, 'implementation', implementation, ...
     'Position', [95 64 130 96]);
-  
+
+  % NOTE: The commented code above is the origional draw script. The code 
+  % below is to implement a fix for the Xilinx SPRAM issue when the 'en' 
+  % is used (seems to be ignored and data lateches regardless). This implements
+  % a Xilinx recommended work-around until the issue is fixed in a later
+  % release. Current issue is with Vivado 2019.1.
+
+  % ------------------------  Start of Fix -------------------------------
+  bram_latency_ram_only = 1;
   reuse_block(blk, 'ram', 'xbsIndex_r4/Single Port RAM', ...
     'depth', num2str(2^bitwidth), 'initVector', '0', ...
     'distributed_mem', 'Block RAM', ...
     'write_mode', 'Read before write', 'en', async, ...
-    'optimize', 'Area', 'latency', 'bram_latency', ...
+    'optimize', 'Area', 'latency', num2str(bram_latency_ram_only), ...
     'Position', [150 62 215 178]);
   add_line(blk, 'counter/1', 'ram/1');
   add_line(blk, 'din/1', 'ram/2');
@@ -98,10 +106,48 @@ function delay_bram_init(blk, varargin)
     add_line(blk, 'constant/1', 'ram/3');
   end
 
-  reuse_block(blk, 'dout', 'built-in/outport', 'Port', '1', ...
-      'Position', [240 113 270 127]);
-  add_line(blk, 'ram/1', 'dout/1');
+%   reuse_block(blk, 'dout', 'built-in/outport', 'Port', '1', ...
+%       'Position', [240 113 270 127]);
+%   add_line(blk, 'ram/1', 'dout/1');
 
+  bram_latency_delays_only = bram_latency-1;
+
+  pos_shift = 0;
+
+  for d_num = 1:bram_latency_delays_only
+     delay_num = ['d' num2str(d_num)];
+
+     reuse_block(blk, delay_num, 'xbsIndex_r4/Delay', ...
+        'Position', [(255 + pos_shift) 113 (285 + pos_shift) 137], ...
+        'latency', '1', ...
+        'en', async, ...
+        'reg_retiming', 'on');
+
+        % add_line(blk, 'en/1', [delay_num '/2']);
+        % ska_sa/devel, commit: f5cb976
+        if strcmp(async,'on'),
+          add_line(blk, 'en/1', [delay_num '/2']);
+        end   
+
+        pos_shift = pos_shift + 50;
+  end
+
+  for d_num = 1:bram_latency_delays_only
+    if d_num == 1
+        add_line(blk, 'ram/1', 'd1/1');            
+    else
+        delay_num = ['d' num2str(d_num)];
+        prev_delay_num = ['d' num2str(d_num-1)];
+        add_line(blk, [prev_delay_num '/1'], [delay_num '/1']);   
+    end  
+
+    if d_num == bram_latency_delays_only
+      reuse_block(blk, 'dout', 'built-in/outport', 'Port', '1', ...
+          'Position', [(255 + pos_shift) 113 (285 + pos_shift) 127]);
+      add_line(blk, [delay_num '/1'], 'dout/1');        
+    end
+
+  end
   clean_blocks(blk);
 
   save_state(blk, 'defaults', defaults, varargin{:});

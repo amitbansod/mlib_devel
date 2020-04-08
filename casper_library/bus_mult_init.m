@@ -724,9 +724,9 @@ function bus_mult_init(blk, varargin)
   reuse_block(blk, 'a*b_bussify', 'casper_library_flow_control/bus_create', ...
     'inputNum', num2str(compo), ...
     'Position', [xpos-bus_create_w/2 ypos_tmp-mult_d*compo/2 xpos+bus_create_w/2 ypos_tmp+mult_d*compo/2]);
-  
+
   if floating_point == 1
-      for index = 1:compo
+      for index = 1:(compo/2)
 
           reint_name_out = ['reint_out',num2str(index)];
                   
@@ -757,6 +757,7 @@ function bus_mult_init(blk, varargin)
   reuse_block(blk, 'a*b', 'built-in/outport', ...
     'Port', '1', 'Position', [xpos-port_w/2 ypos_tmp-port_d/2 xpos+port_w/2 ypos_tmp+port_d/2]);
   add_line(blk, ['a*b_bussify/1'], ['a*b/1']);
+  
   ypos_tmp = ypos_tmp + yinc + port_d;  
 
   ypos_tmp = ypos + mult_d*(compb+compa) + 2*yinc;
