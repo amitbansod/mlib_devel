@@ -123,10 +123,7 @@ if coeff_sym,
     % y(n) = sum(aix(n-i)) for i=0:N. sync is thus related to x(0)
     sync_latency = add_latency + sync_latency;
 end
-<<<<<<< HEAD
-=======
 % if delay is greater than 17*3 then might as well use logic as using more than 3 SRL16s and sync_delay uses approx 3 (2 comparators, one counter) 
->>>>>>> 6216bb3488a18445ea0ee3b8f43b6178f952e825
 % if sync_latency > 17*3,
 %     sync_delay_block = 'casper_library_delays/sync_delay';
 %     parm_name = 'DelayLen';
