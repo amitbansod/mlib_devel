@@ -54,7 +54,7 @@ entity forty_gbe is
         qsfp_gtrefclk    : out std_logic;
         qsfp_soft_reset  : in  std_logic;
 
-        eth_if_present   : out std_logic;
+        fgbe_if_present   : out std_logic;
 
         xlgmii_txled     : out std_logic_vector(1 downto 0);
         xlgmii_rxled     : out std_logic_vector(1 downto 0);
@@ -148,7 +148,7 @@ architecture arch_forty_gbe of forty_gbe is
         DAT_I  : in std_logic_vector(31 downto 0);
         DAT_O  : out std_logic_vector(31 downto 0);
         ACK_O  : out std_logic;
-        ADR_I  : in std_logic_vector(15 downto 0);
+        ADR_I  : in std_logic_vector(31 downto 0);
         CYC_I  : in std_logic;
         SEL_I  : in std_logic_vector(3 downto 0);
         STB_I  : in std_logic;
@@ -211,7 +211,7 @@ architecture arch_forty_gbe of forty_gbe is
         );
     end component IEEE802_3_XL_PHY_top;
     
-    attribute mark_debug : string;
+    --attribute mark_debug : string;
     
     signal xlgmii_tx_valid        : std_logic_vector(3 downto 0);
     signal xlgmii_tx_end_of_frame : std_logic;
@@ -239,9 +239,9 @@ architecture arch_forty_gbe of forty_gbe is
     signal xlgmii_txd : std_logic_vector(255 downto 0);
     signal xlgmii_txc : std_logic_vector(31 downto 0);
     signal xlgmii_rxd : std_logic_vector(255 downto 0);
-    attribute mark_debug of xlgmii_rxd: signal is "true";
+    --attribute mark_debug of xlgmii_rxd: signal is "true";
     signal xlgmii_rxc : std_logic_vector(31 downto 0);
-    attribute mark_debug of xlgmii_rxc: signal is "true";
+    --attribute mark_debug of xlgmii_rxc: signal is "true";
 
     signal xlgmii_txled_sig : std_logic_vector(1 downto 0);
     signal xlgmii_rxled_sig : std_logic_vector(1 downto 0);
@@ -336,7 +336,7 @@ begin
         DAT_I => wb_dat_i,
         DAT_O => wb_dat_o,
         ACK_O => wb_ack_o,
-        ADR_I => wb_adr_i(15 downto 0),
+        ADR_I => wb_adr_i,
         CYC_I => wb_cyc_i,
         SEL_I => wb_sel_i,
         STB_I => wb_stb_i,
@@ -440,7 +440,7 @@ begin
             TEST_PATTERN_ERROR_O => open
         );
 
-        eth_if_present <= '1';
+        fgbe_if_present <= '1';
         phy_rx_up    <= phy_rx_up_sig;
         xlgmii_txled <= xlgmii_txled_sig;
         xlgmii_rxled <= xlgmii_rxled_sig;
