@@ -16,16 +16,14 @@ onehundredgbe:
   refclk_freq_str: "161.1328125"
   cmac_loc:
     - CMACE4_X0Y3
-    - CMACE4_X0Y4
-    - CMACE4_X0Y5
 provides:
   - qsfp0
 pins:
   sys_clk_p:
-    loc: BJ9
+    loc: G17
     iostd: LVDS
   sys_clk_n:
-    loc: BK9
+    loc: G16
     iostd: LVDS
   # Use GPIO 9,10,11,12 for SPI
   miso:
