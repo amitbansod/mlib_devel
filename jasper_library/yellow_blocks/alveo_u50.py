@@ -36,7 +36,7 @@ class alveo_u50(YellowBlock):
         return [
             PortConstraint('sys_clk_n', 'sys_clk_n'),
             PortConstraint('sys_clk_p', 'sys_clk_p'),
-            ClockConstraint('sys_clk_p', period=3.333),
+            ClockConstraint('sys_clk_p', period=10.00),
             #Refer to UG1314 page 23 for settings
             RawConstraint("set_property CONFIG_VOLTAGE 1.8 [ current_design ]"),
             RawConstraint("set_property BITSTREAM.CONFIG.CONFIGFALLBACK Enable [ current_design ]"),
@@ -48,7 +48,7 @@ class alveo_u50(YellowBlock):
             RawConstraint("set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES [current_design]"),
             RawConstraint("set_property BITSTREAM.CONFIG.UNUSEDPIN Pullup [current_design]"),            
             RawConstraint("set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR YES [current_design]"),
-            #RawConstraint("set_property CFGBVS GND [ current_design ]"),            
+            RawConstraint("set_operating_conditions -design_power_budget 63"),            
             #RawConstraint("set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN Enable [current_design]"),
         ]
     def gen_tcl_cmds(self):

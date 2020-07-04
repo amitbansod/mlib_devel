@@ -13,7 +13,7 @@ module alveo_u50_infrastructure(
     output idelay_rdy
   );
 
-  // Sys clk is 300MHz on the ADM-PCIE-9H7
+  // Sys clk is 100MHz on Alveo U50
   wire sys_clk_ds;
   IBUFDS #(
     .IOSTANDARD("LVDS"),
