@@ -1,0 +1,127 @@
+name: alveo_u50
+manufacturer: Xilinx
+fpga: xcu50-fsvh2104-2-e
+family: ultrascaleplus
+backend_target: vivado
+mmbus_architecture: AXI4-Lite
+mmbus_base_address: 0x10000000
+# How to address each 32-bit (i.e. 4 indicates byte-addressable)
+mmbus_address_alignment: 4
+sources: []
+constraints: []
+pcie:
+  loc: PCIE4C_X1Y0
+  use_tandem: False #True
+onehundredgbe:
+  refclk_freq_str: "161.1328125"
+  cmac_loc:
+    - CMACE4_X0Y3
+    - CMACE4_X0Y4
+    - CMACE4_X0Y5
+provides:
+  - qsfp0
+pins:
+  sys_clk_p:
+    loc: BJ9
+    iostd: LVDS
+  sys_clk_n:
+    loc: BK9
+    iostd: LVDS
+  # Use GPIO 9,10,11,12 for SPI
+  miso:
+    loc: BJ29
+    iostd: LVCMOS18
+  mosi:
+    loc: BG32
+    iostd: LVCMOS18
+  sclk:
+    loc: G19
+    iostd: LVCMOS18
+  cs_n:
+    loc: BK30
+    iostd: LVCMOS18
+  led:
+    iostd: LVCMOS18
+    loc:
+      - E18
+      - E16
+      - F17
+      - E15
+      - F15
+      - E17
+  # PCI Express lanes
+  pcie_rst_n:
+    loc: AW27
+    iostd: LVCMOS18
+  qsfp_mgt_ref_clk_p:
+    loc:
+      - N36
+      - M38
+  qsfp_mgt_ref_clk_n:
+    loc:
+      - N37
+      - M39
+  qsfp_mgt_rx_p:
+    loc:
+      - J45
+      - G45
+      - F43
+      - E45
+  qsfp_mgt_rx_n:
+    loc:
+      - J46
+      - G46
+      - F44
+      - E46
+  qsfp_mgt_tx_p:
+    loc:
+      - D42
+      - C40
+      - B42
+      - A40
+  qsfp_mgt_tx_n:
+    loc:
+      - D43
+      - C41
+      - B43
+      - A41
+  pcie_refclk_p:
+    loc: AF9
+  pcie_gty_rx_p:
+    loc:
+      - AL2
+      - AM4
+      - AK4
+      - AN2
+      - AP4
+      - AR2
+      - AT4
+      - AU2
+      - AV4
+      - AW2
+      - BA2
+      - BC2
+      - AY4
+      - BB4
+      - BD4
+      - BE6
+  pcie_gty_tx_p:
+    loc:
+      - Y5
+      - AA7
+      - AB5
+      - AC7
+      - AD5
+      - AF5
+      - AE7
+      - AH5
+      - AG7
+      - AJ7
+      - AL7
+      - AM9
+      - AN7
+      - AP9
+      - AR7
+      - AT9
+
+
