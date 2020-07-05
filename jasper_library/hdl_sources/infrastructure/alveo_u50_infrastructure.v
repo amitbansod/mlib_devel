@@ -37,7 +37,7 @@ module alveo_u50_infrastructure(
 
   MMCM_BASE #(
    .BANDWIDTH          ("OPTIMIZED"), // Jitter programming ("HIGH","LOW","OPTIMIZED")
-   .CLKFBOUT_MULT_F    (2), // Multiply value for all CLKOUT (5.0-64.0).
+   .CLKFBOUT_MULT_F    (12), // Multiply value for all CLKOUT (5.0-64.0).
    .CLKFBOUT_PHASE     (0.0),
    .CLKIN1_PERIOD      (10.0), // Clock is 100 MHz
    .CLKOUT0_DIVIDE_F   (1.0), // Divide amount for CLKOUT0 (1.000-128.000).
@@ -55,9 +55,9 @@ module alveo_u50_infrastructure(
    .CLKOUT4_PHASE      (0.0),
    .CLKOUT5_PHASE      (0.0),
    .CLKOUT6_PHASE      (0.0),
-   .CLKOUT1_DIVIDE     (2),
-   .CLKOUT2_DIVIDE     (2),
-   .CLKOUT3_DIVIDE     (1),
+   .CLKOUT1_DIVIDE     (12),
+   .CLKOUT2_DIVIDE     (12),
+   .CLKOUT3_DIVIDE     (6),
    .CLKOUT4_DIVIDE     (1),
    .CLKOUT5_DIVIDE     (1),
    .CLKOUT6_DIVIDE     (1),
