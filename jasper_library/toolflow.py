@@ -927,7 +927,7 @@ class Toolflow(object):
         stringToMatchC = 'latency1: if (latency <= 6) generate'
 
         lines = []
-        self.logger.info('Opening Original hdl file %s' % hdl_sysgen_filename)
+        self.logger.debug('Opening Original hdl file %s' % hdl_sysgen_filename)
 
         # checks to see if Vivado version is 2018.2 before doing this change
         ver_exists = 'False'
