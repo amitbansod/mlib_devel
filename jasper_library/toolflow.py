@@ -927,28 +927,28 @@ class Toolflow(object):
         stringToMatchC = 'latency1: if (latency <= 6) generate'
 
         lines = []
-        self.logger.debug('Opening Original hdl file %s' % hdl_sysgen_filename)
+        self.logger.info('Opening Original hdl file %s' % hdl_sysgen_filename)
 
         # checks to see if Vivado version is 2018.2 before doing this change
         ver_exists = 'False'
-        with open(hdl_sysgen_filename, 'r') as fh1:
+        with open(hdl_sysgen_filename, 'r',encoding="ISO-8859-1") as fh1:
             for line in fh1:
                 if stringToMatch_ver in line:
                     ver_exists = True
         fh1.close()
-
+        
         # checks to see if dual port ram is instantiated before doing this change
         dpram_exists = 'False'
-        with open(hdl_sysgen_filename, 'r') as fh1:
+        with open(hdl_sysgen_filename, 'r',encoding="ISO-8859-1") as fh1:
             for line in fh1:
                 if stringToMatchS in line:
                     dpram_exists = True
         fh1.close()
-
+        
         # If dual port ram exists and version is 2018.2 then, read sysgen code from original file and write appended
         # corrected code to a new list that will be written into a new file
         if dpram_exists == True and ver_exists == True:
-            with open(hdl_sysgen_filename, 'r') as fh1:
+            with open(hdl_sysgen_filename, 'r',encoding="ISO-8859-1") as fh1:
                 for line in fh1:
                     if stringToMatchA in line:
                         linesub = line[:line.find('>') + 2] + '3' + line[line.find('>') + 3:]
@@ -964,7 +964,7 @@ class Toolflow(object):
             fh1.close()
 
             # write updated sysgen code to the same file that will be imported to the correct folder
-            with open(hdl_sysgen_filename, 'w') as fh2:
+            with open(hdl_sysgen_filename, 'w',encoding="ISO-8859-1") as fh2:
                 fh2.writelines(lines)
             fh2.close()
             self.logger.debug('File written. Vivado version is 2018.2: %s. Dual Port RAM exists: %s'
